@@ -6,7 +6,7 @@ import image3 from "../assets/authBg.png"
 import image4 from "../assets/image4.png"
 import image5 from "../assets/image5.png"
 import { RiImageAddLine } from "react-icons/ri"
-import { userDataContext } from '../context/userContext'
+import { userDataContext } from '../context/UserContext'
 import { useNavigate } from 'react-router-dom'
 import { IoArrowBack } from "react-icons/io5";
 
