@@ -2,7 +2,6 @@ import uploadOnCloudinary from "../config/cloudinary.js"
 import geminiResponse from "../gemini.js"
 import moment from "moment"
 import User from "../models/user.model.js"
-import { response } from "express"
 
 export const getCurrentUser = async(req,res)=>{
    try {
@@ -39,8 +38,14 @@ export const updateAssistant=async(req,res)=>{
 export const askToAssistant = async (req, res) => {
   try {
     const {command } = req.body;
+    if (typeof command !== "string" || !command.trim()) {
+      return res.status(400).json({ response: "Please provide a command." });
+    }
 
     const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ response: "User not found." });
+    }
     const userName = user.name;
     const assistantName = user.assistantName;
     const result = await geminiResponse(command, assistantName, userName);
@@ -85,11 +90,13 @@ export const askToAssistant = async (req, res) => {
       case 'google_search':
       case 'youtube_search':
       case 'google_play':
+      case 'youtube_play':
       case 'general':
       case 'calculator_open': 
       case 'facebook_open': 
       case 'instagram_open': 
       case 'weather_show':
+      case 'weather-show':
       return res.json({
          type,
           userInput: gemResult.userInput,
