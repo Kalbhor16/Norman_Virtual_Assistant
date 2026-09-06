@@ -29,7 +29,7 @@ function SignUp() {
     console.log(error)
     setUserData(null)
     setLoading(false)
-    setErr(error.response.data.message)
+    setErr(error.response?.data?.message || "Unable to sign up. Please try again.")
    
    }
   }

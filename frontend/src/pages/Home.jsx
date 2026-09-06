@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react"
-import UserContext, { userDataContext } from "../context/UserContext"
+import { userDataContext } from "../context/UserContext"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 
@@ -8,6 +8,9 @@ function Home() {
     const navigate = useNavigate()
 
     const [listening, setListening] = useState(false)
+    const recognitionSupported =
+        typeof window !== "undefined" &&
+        Boolean(window.SpeechRecognition || window.webkitSpeechRecognition)
 
     const recognitionRef = useRef(null)
     const isSpeakingRef = useRef(false)
@@ -51,7 +54,10 @@ function Home() {
 
         try {
             recognitionRef.current.start()
-        } catch {}
+        } catch (error) {
+            console.error("Unable to start speech recognition:", error)
+            setListening(false)
+        }
     }
 
     //STOP MIC
@@ -86,11 +92,18 @@ function Home() {
         if (type === "youtube_search" || type === "youtube_play")
             window.open(`https://www.youtube.com/results?search_query=${query}`, "_blank")
     }
+    const handleCommandRef = useRef(handleCommand)
+    useEffect(() => {
+        handleCommandRef.current = handleCommand
+    })
 
     // SETUP RECOGNITION 
     useEffect(() => {
         const SpeechRecognition =
             window.SpeechRecognition || window.webkitSpeechRecognition
+        if (!SpeechRecognition) {
+            return
+        }
 
         const recognition = new SpeechRecognition()
 
@@ -120,20 +133,26 @@ function Home() {
             console.log("heard:", transcript)
 
             if (
+                userData?.assistantName &&
                 transcript
                     .toLowerCase()
                     .includes(userData.assistantName.toLowerCase())
             ) {
                 stopRecognition()
 
-                const data = await getGeminiResponse(transcript)
-
-                handleCommand(data)
+                try {
+                    const data = await getGeminiResponse(transcript)
+                    if (data) {
+                        handleCommandRef.current(data)
+                    }
+                } catch (error) {
+                    console.error("Unable to process assistant command:", error)
+                }
             }
         }
 
         return () => recognition.stop()
-    }, [])
+    }, [getGeminiResponse, userData?.assistantName])
 
     
     return (
@@ -155,12 +174,19 @@ function Home() {
             
             <button
                 onClick={startRecognition}
+                disabled={!recognitionSupported}
                 className={`px-8 py-3 rounded-full font-semibold transition 
                 ${listening
                         ? "bg-red-500 animate-pulse text-white"
-                        : "bg-green-500 text-white"}`}
+                        : recognitionSupported
+                            ? "bg-green-500 text-white"
+                            : "bg-gray-500 text-white cursor-not-allowed"}`}
             >
-                {listening ? "Listening..." : "Start Assistant"}
+                {!recognitionSupported
+                    ? "Speech recognition unavailable"
+                    : listening
+                        ? "Listening..."
+                        : "Start Assistant"}
             </button>
             
         </div>

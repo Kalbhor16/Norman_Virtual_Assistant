@@ -8,7 +8,7 @@ const geminiResponse = async (command, assistantName, userName) => {
     Your task is to understand the user's natural language inpute and respond white a JSON object like this:
 
     {
-      "type":"general" | "google_search" | "youtube_search" | "youtube_play" | "get_time" | "get_date" | "get_day" | "get_month" | "calculator_open" | "instagram_open" | "facebook_open" | "weather-show",
+      "type":"general" | "google_search" | "youtube_search" | "youtube_play" | "get_time" | "get_date" | "get_day" | "get_month" | "calculator_open" | "instagram_open" | "facebook_open" | "weather_show",
       "userInput":"<original user input>" {only remove your name from userinput if exsits} and agar kisi ne google ya youtube pe kuch search karne ko bola hai to userInput me only bo search baala text jaye,
       "response":"<a short spoken response to read out loud to the user>" 
     }

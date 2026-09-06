@@ -5,7 +5,7 @@ import axios from 'axios'
 import { IoArrowBack } from "react-icons/io5";
 function Customize2() {
   const{userData,backendImage,selectedImage,serverUrl,setUserData}=useContext(userDataContext)
-  const[assistantName,setAssistantName]=useState(userData?.AssistantName || "")
+  const[assistantName,setAssistantName]=useState(userData?.assistantName || "")
   const[loading,setLoading]=useState(false)
   const navigete=useNavigate()
   const handleUpdateAssistant=async()=>{
