@@ -1,4 +1,4 @@
-{
+{ "homepage": "https://github.com/Kalbhor16/Norman_Virtual_Assistant.git",
   "name": "frontend",
   "private": true,
   "version": "0.0.0",
@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
